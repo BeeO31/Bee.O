@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bee.O - Association</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<header class="hero-header">
+  <div class="overlay">
+    <h1>Bienvenue chez Bee.O</h1>
+    <p>Association des passionnés d’olives et de miel</p>
+  </div>
+</header>
+
+<nav class="main-nav">
+  <a href="#actus"><i class="fas fa-newspaper"></i> Actualités</a>
+  <a href="#infos"><i class="fas fa-info-circle"></i> Infos Pratiques</a>
+  <a href="#liens"><i class="fas fa-link"></i> Liens Utiles</a>
+  <a href="#galerie"><i class="fas fa-images"></i> Galerie</a>
+  <a href="#admin"><i class="fas fa-user-shield"></i> Admin</a>
+</nav>
+
+<section id="actus" class="section">
+  <h2>Actualités</h2>
+  <div id="actus-container" class="actus-list"></div>
+  <h3>Actualités archivées</h3>
+  <div id="archive-container" class="actus-list"></div>
+</section>
+
+<section id="infos" class="section">
+  <h2>Infos pratiques</h2>
+  <div class="accordion">
+    <div class="accordion-header">Formulaire d’adhésion</div>
+    <div class="accordion-content">
+      <iframe src="https://formspree.io/f/xxxxxx" width="100%" height="400"></iframe>
+    </div>
+
+    <div class="accordion-header">Processus de trituration</div>
+    <div class="accordion-content">
+      <p>Explication du processus (texte à insérer)...</p>
+    </div>
+
+    <div class="accordion-header">FAQ</div>
+    <div class="accordion-content">
+      <p>Liste des questions/réponses (contenu à ajouter)...</p>
+    </div>
+  </div>
+</section>
+
+<section id="liens" class="section">
+  <h2>Liens Utiles</h2>
+  <div id="links-container" class="links-grid"></div>
+</section>
+
+<section id="galerie" class="section">
+  <h2>Galerie</h2>
+  <div class="gallery-grid">
+    <img src="assets/Logo Bee.O.jpg" alt="Logo Bee.O" class="lightbox-item">
+    <img src="assets/Logo WhatsApp.jpg" alt="Logo WhatsApp" class="lightbox-item">
+  </div>
+</section>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <span class="close-lightbox">&times;</span>
+  <img id="lightbox-img" src="">
+</div>
+
+<!-- Admin intégré -->
+<section id="admin" class="section admin-panel">
+  <h2>Administration</h2>
+  <div id="login-box">
+    <input type="password" id="admin-pass" placeholder="Mot de passe">
+    <button id="login-btn">Se connecter</button>
+    <p id="login-error" style="color:red; display:none;">Mot de passe incorrect</p>
+  </div>
+
+  <div id="admin-content" style="display:none;">
+    <h3>Ajouter une actualité</h3>
+    <input id="news-title" placeholder="Titre">
+    <textarea id="news-content" placeholder="Contenu"></textarea>
+    <input id="news-image" placeholder="URL image (optionnel)">
+    <select id="news-position">
+      <option value="left">Image à gauche</option>
+      <option value="right">Image à droite</option>
+    </select>
+    <button id="add-news">Ajouter</button>
+    <hr>
+    <h3>Ajouter un lien utile</h3>
+    <input id="link-title" placeholder="Titre">
+    <input id="link-url" placeholder="URL">
+    <input id="link-image" placeholder="URL image (optionnel)">
+    <button id="add-link">Ajouter</button>
+  </div>
+</section>
+
+<button id="scrollTopBtn" title="Retour en haut"><i class="fas fa-arrow-up"></i></button>
+
+<script src="script.js"></script>
+</body>
+</html>
