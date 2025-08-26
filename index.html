@@ -1,107 +1,67 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="google-site-verification" content="B36KQY6Nkbk9Cwj-PKoyWzovjDe5d_uyB44Amx7Fl6s" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Bee.O - Association</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script defer src="script.js"></script>
 </head>
 <body>
-
-<header class="hero-header">
-  <div class="overlay">
-    <h1>Bienvenue chez Bee.O</h1>
-    <p>Association des passionnés d’olives et de miel</p>
-  </div>
-</header>
-
-<nav class="main-nav">
-  <a href="#actus"><i class="fas fa-newspaper"></i> Actualités</a>
-  <a href="#infos"><i class="fas fa-info-circle"></i> Infos Pratiques</a>
-  <a href="#liens"><i class="fas fa-link"></i> Liens Utiles</a>
-  <a href="#galerie"><i class="fas fa-images"></i> Galerie</a>
-  <a href="#admin"><i class="fas fa-user-shield"></i> Admin</a>
-</nav>
-
-<section id="actus" class="section">
-  <h2>Actualités</h2>
-  <div id="actus-container" class="actus-list"></div>
-  <h3>Actualités archivées</h3>
-  <div id="archive-container" class="actus-list"></div>
-</section>
-
-<section id="infos" class="section">
-  <h2>Infos pratiques</h2>
-  <div class="accordion">
-    <div class="accordion-header">Formulaire d’adhésion</div>
-    <div class="accordion-content">
-      <iframe src="https://formspree.io/f/xxxxxx" width="100%" height="400"></iframe>
+  <header class="hero-header">
+    <img src="assets/Logo Bee.O.jpg" alt="Logo Bee.O" class="hero-image">
+    <div class="hero-text">
+      <h1 class="highlight">Bienvenue chez Bee.O</h1>
+      <p class="highlight">Association des passionnés d’olives, d'huile d'olive et de miel</p>
     </div>
+  </header>
 
-    <div class="accordion-header">Processus de trituration</div>
-    <div class="accordion-content">
-      <p>Explication du processus (texte à insérer)...</p>
-    </div>
+  <nav class="main-nav">
+    <a href="#actualites"><i class="fa-solid fa-newspaper"></i> Actualités</a>
+    <a href="#infos"><i class="fa-solid fa-circle-info"></i> Infos Pratiques</a>
+    <a href="#liens"><i class="fa-solid fa-link"></i> Liens Utiles</a>
+    <a href="#galerie"><i class="fa-solid fa-image"></i> Galerie</a>
+    <a href="admin.html" target="_blank"><i class="fa-solid fa-user"></i> Admin</a>
+  </nav>
 
-    <div class="accordion-header">FAQ</div>
-    <div class="accordion-content">
-      <p>Liste des questions/réponses (contenu à ajouter)...</p>
-    </div>
-  </div>
-</section>
+  <main>
+    <section id="actualites" class="section">
+      <h2 class="centered-title">Actualités</h2>
+      <div id="actus-container" class="actus-grid"></div>
+    </section>
 
-<section id="liens" class="section">
-  <h2>Liens Utiles</h2>
-  <div id="links-container" class="links-grid"></div>
-</section>
+    <section id="infos" class="section">
+      <h2 class="centered-title">Infos Pratiques</h2>
+      <div class="infos-container">
+        <button class="btn small-btn" onclick="window.open('form-adhesion.html','_blank')">Adhésion</button>
+        <button class="btn small-btn" onclick="window.open('form-inscription.html','_blank')">Inscription</button>
+        <button class="btn small-btn" onclick="window.open('form-renseignement.html','_blank')">Renseignement</button>
+      </div>
+    </section>
 
-<section id="galerie" class="section">
-  <h2>Galerie</h2>
-  <div class="gallery-grid">
-    <img src="assets/Logo Bee.O.jpg" alt="Logo Bee.O" class="lightbox-item">
-    <img src="assets/Logo WhatsApp.jpg" alt="Logo WhatsApp" class="lightbox-item">
-  </div>
-</section>
+    <section id="liens" class="section">
+      <h2 class="centered-title">Liens Utiles</h2>
+      <div id="liens-container" class="links-grid"></div>
+    </section>
 
-<!-- Lightbox -->
-<div class="lightbox" id="lightbox">
-  <span class="close-lightbox">&times;</span>
-  <img id="lightbox-img" src="">
-</div>
+    <section id="galerie" class="section">
+      <h2 class="centered-title">Galerie</h2>
+      <div id="galerie-container" class="galerie-grid"></div>
+    </section>
 
-<!-- Admin intégré -->
-<section id="admin" class="section admin-panel">
-  <h2>Administration</h2>
-  <div id="login-box">
-    <input type="password" id="admin-pass" placeholder="Mot de passe">
-    <button id="login-btn">Se connecter</button>
-    <p id="login-error" style="color:red; display:none;">Mot de passe incorrect</p>
-  </div>
+    <section class="partners-carousel section">
+      <h2>Nos partenaires</h2>
+      <div class="carousel-wrapper">
+        <div class="carousel" id="partnersCarousel"></div>
+      </div>
+    </section>
+  </main>
 
-  <div id="admin-content" style="display:none;">
-    <h3>Ajouter une actualité</h3>
-    <input id="news-title" placeholder="Titre">
-    <textarea id="news-content" placeholder="Contenu"></textarea>
-    <input id="news-image" placeholder="URL image (optionnel)">
-    <select id="news-position">
-      <option value="left">Image à gauche</option>
-      <option value="right">Image à droite</option>
-    </select>
-    <button id="add-news">Ajouter</button>
-    <hr>
-    <h3>Ajouter un lien utile</h3>
-    <input id="link-title" placeholder="Titre">
-    <input id="link-url" placeholder="URL">
-    <input id="link-image" placeholder="URL image (optionnel)">
-    <button id="add-link">Ajouter</button>
-  </div>
-</section>
+  <footer>&copy; 2025 Bee.O - Tous droits réservés</footer>
 
-<button id="scrollTopBtn" title="Retour en haut"><i class="fas fa-arrow-up"></i></button>
-
-<script src="script.js"></script>
+  <button id="scrollTopBtn" class="scroll-top" aria-label="Retour en haut">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
 </body>
 </html>
-
