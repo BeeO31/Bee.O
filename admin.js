@@ -1,26 +1,28 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // Initialiser les listes au chargement
-    renderActusList();
-    renderLiensList();
-    renderGalleryList();
-    renderPartnersList();
+  const ADMIN_PASS = "beeopass";
+  
+  // Vérifie si l'utilisateur est déjà connecté dans la session
+  if (!sessionStorage.getItem("isAdmin")) {
+      let pass = prompt("Veuillez entrer le mot de passe administrateur :");
+      // Boucle pour continuer à demander le mot de passe tant qu'il est incorrect
+      while (pass !== ADMIN_PASS) {
+          alert("Mot de passe incorrect. Accès refusé.");
+          pass = prompt("Veuillez entrer le mot de passe administrateur :");
+      }
+      alert("Accès autorisé !");
+      sessionStorage.setItem("isAdmin", "true");
+  }
 
-    const currentUser = netlifyIdentity.currentUser();
-    if (!currentUser) {
-        netlifyIdentity.open();
-        netlifyIdentity.on('login', user => {
-            window.location.reload();
-        });
-    } else {
-        console.log("Utilisateur connecté : ", currentUser);
-    }
+  // Initialiser les listes au chargement
+  renderActusList();
+  renderLiensList();
+  renderGalleryList();
+  renderPartnersList();
 });
 
 function logout() {
-    netlifyIdentity.logout();
-    netlifyIdentity.on('logout', () => {
-        window.location.href = "index.html";
-    });
+  sessionStorage.removeItem("isAdmin");
+  window.location.href = "index.html";
 }
 
 let editingActuIndex = null;
