@@ -1,193 +1,124 @@
-const LS_NEWS = "beeO_news";
-const LS_ARCHIVE = "beeO_archive";
-const LS_LINKS = "beeO_links";
+document.addEventListener("DOMContentLoaded", () => {
+  renderAll();
 
-let news = JSON.parse(localStorage.getItem(LS_NEWS)) || [];
-let archived = JSON.parse(localStorage.getItem(LS_ARCHIVE)) || [];
-let links = JSON.parse(localStorage.getItem(LS_LINKS)) || [];
+  // Scroll-top button
+  const scrollBtn = document.getElementById("scrollTopBtn");
+  window.addEventListener("scroll", () => {
+    scrollBtn.style.display = (window.scrollY > 200) ? "block" : "none";
+  });
+  scrollBtn.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
 
-const actusContainer = document.getElementById("actus-container");
-const archiveContainer = document.getElementById("archive-container");
-const linksContainer = document.getElementById("links-container");
+  // Init carrousel
+  initPartnersCarousel();
+});
 
-const colors = ["rgb(255,47,155)", "#ffc107", "#4caf50"];
-let colorIndex = 0;
+function renderAll() {
+  renderActus();
+  renderLiens();
+  renderGalerie();
+  renderPartners();
+}
 
-// INIT DEMO NEWS
-if (news.length === 0 && !localStorage.getItem("beeO_demoNews")) {
-  news = [
-    {
-      id: Date.now(),
-      title: "Assemblée Générale",
-      content: "Rendez-vous le 15 septembre pour notre AG annuelle.\nSalle polyvalente à 18h00.",
-      image: "https://drive.google.com/uc?export=view&id=1K9lyMp_ieaoWIoTU31hbw_xhahPJR7pG",
-      position: "left"
-    },
-    {
-      id: Date.now() + 1,
-      title: "Portes Ouvertes",
-      content: "Le 25 septembre, venez découvrir nos ateliers et dégustations.\nEntrée libre !",
-      image: "https://drive.google.com/uc?export=view&id=1Ad_8U5eBdq5ORnjCMhlDyCpfX9iCWeAH",
-      position: "right"
+function renderActus() {
+  const container = document.getElementById("actus-container");
+  container.innerHTML = "";
+
+  const actus = JSON.parse(localStorage.getItem("actus") || "[]");
+
+  actus.forEach((a, i) => {
+    const div = document.createElement("div");
+    div.className = `actu-item ${a.pos === "right" ? "img-right" : "img-left"}`;
+    div.innerHTML = `
+      ${a.img ? `<img src="${a.img}" class="actu-img" alt="">` : ""}
+      <div class="actu-content">
+        <h3 class="actu-title" style="color:${i===0?'rgb(255,47,155)':(i%2?'#FFD700':'#4caf50')}">${a.titre}</h3>
+        <p>${a.texte}</p>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function renderLiens() {
+  const container = document.getElementById("liens-container");
+  container.innerHTML = "";
+  const liens = JSON.parse(localStorage.getItem("liens") || "[]");
+
+  liens.forEach(l => {
+    const a = document.createElement("a");
+    a.href = l.url;
+    a.className = "link-card";
+    a.target = "_blank";
+    a.innerHTML = `<img src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(l.url)}" alt="Icone ${l.titre}"><p>${l.titre}</p>`;
+    container.appendChild(a);
+  });
+}
+
+function renderGalerie() {
+  const container = document.getElementById("galerie-container");
+  container.innerHTML = "";
+  const images = JSON.parse(localStorage.getItem("gallery") || "[]");
+
+  images.forEach(img => {
+    const div = document.createElement("div");
+    div.className = "gallery-item";
+    div.innerHTML = `<img src="${img}" alt="Photo Galerie">`;
+    container.appendChild(div);
+  });
+}
+
+async function renderPartners() {
+  const wrap = document.getElementById("partnersCarousel");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+
+  let base = [];
+  try {
+    const res = await fetch("partners.json");
+    base = await res.json();
+  } catch(e){ base = []; }
+
+  const extras = JSON.parse(localStorage.getItem("partners") || "[]");
+  const partners = [...base, ...extras];
+
+  partners.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "partner";
+    const img = `<img src="assets/logos/${p.logo}" alt="${p.name}">`;
+    div.innerHTML = p.link ? `<a href="${p.link}" target="_blank">${img}</a>` : img;
+    wrap.appendChild(div);
+  });
+}
+
+function initPartnersCarousel() {
+  const carousel = document.getElementById("partnersCarousel");
+  if (!carousel) return;
+
+  const animationDuration = 15000;
+  const clone = carousel.cloneNode(true);
+  carousel.parentNode.appendChild(clone);
+
+  const style = document.createElement('style');
+  style.innerHTML = `
+    .carousel-wrapper > div {
+      animation: scroll ${animationDuration / 1000}s linear infinite;
     }
-  ];
-  localStorage.setItem("beeO_demoNews", "1");
-  localStorage.setItem(LS_NEWS, JSON.stringify(news));
+    .carousel-wrapper > div:nth-child(2) {
+      animation-delay: -${animationDuration / 2000}s;
+    }
+    @keyframes scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+  `;
+  document.head.appendChild(style);
 }
 
-// RENDER ACTUS
-function renderNews() {
-  actusContainer.innerHTML = "";
-  news.forEach((item, index) => {
-    const div = document.createElement("div");
-    div.classList.add("actu-item");
-    div.innerHTML = `
-      ${item.position === "left" && item.image ? `<img src="${item.image}" alt="">` : ""}
-      <div class="actu-text">
-        <h3 style="color:${colors[index % colors.length]}">${item.title}</h3>
-        <p>${item.content.replace(/\n/g, "<br>")}</p>
-        <div class="admin-actions">
-          <button onclick="archiveNews(${item.id})">Archiver</button>
-          <button onclick="deleteNews(${item.id})">Supprimer</button>
-        </div>
-      </div>
-      ${item.position === "right" && item.image ? `<img src="${item.image}" alt="">` : ""}
-    `;
-    actusContainer.appendChild(div);
-  });
-}
-
-// RENDER ARCHIVE
-function renderArchived() {
-  archiveContainer.innerHTML = "";
-  archived.forEach(item => {
-    const div = document.createElement("div");
-    div.classList.add("actu-item");
-    div.innerHTML = `
-      ${item.position === "left" && item.image ? `<img src="${item.image}" alt="">` : ""}
-      <div class="actu-text">
-        <h3>${item.title}</h3>
-        <p>${item.content.replace(/\n/g, "<br>")}</p>
-      </div>
-      ${item.position === "right" && item.image ? `<img src="${item.image}" alt="">` : ""}
-    `;
-    archiveContainer.appendChild(div);
-  });
-}
-
-// ARCHIVER
-function archiveNews(id) {
-  const index = news.findIndex(n => n.id === id);
-  if (index > -1) {
-    archived.push(news[index]);
-    news.splice(index, 1);
-    localStorage.setItem(LS_NEWS, JSON.stringify(news));
-    localStorage.setItem(LS_ARCHIVE, JSON.stringify(archived));
+// Rafraîchir la page si des changements sont faits via l'admin
+window.addEventListener("storage", (event) => {
+  if (event.key === "site:update") {
     renderAll();
   }
-}
-
-// SUPPRIMER
-function deleteNews(id) {
-  news = news.filter(n => n.id !== id);
-  localStorage.setItem(LS_NEWS, JSON.stringify(news));
-  renderAll();
-}
-
-// AJOUTER NEWS
-document.getElementById("add-news").addEventListener("click", () => {
-  const title = document.getElementById("news-title").value;
-  const content = document.getElementById("news-content").value;
-  const image = document.getElementById("news-image").value;
-  const position = document.getElementById("news-position").value;
-
-  const newItem = { id: Date.now(), title, content, image, position };
-  news.unshift(newItem);
-  localStorage.setItem(LS_NEWS, JSON.stringify(news));
-  renderAll();
 });
-
-// LIENS DÉMO
-if (links.length === 0) {
-  links = [
-    { title: "Vidéo Google Drive", url: "https://drive.google.com/file/d/1K9lyMp_ieaoWIoTU31hbw_xhahPJR7pG/view", img: "https://drive.google.com/uc?export=view&id=1K9lyMp_ieaoWIoTU31hbw_xhahPJR7pG" },
-    { title: "Google Slides", url: "https://drive.google.com/file/d/1Ad_8U5eBdq5ORnjCMhlDyCpfX9iCWeAH/view", img: "https://drive.google.com/uc?export=view&id=1Ad_8U5eBdq5ORnjCMhlDyCpfX9iCWeAH" }
-  ];
-  localStorage.setItem(LS_LINKS, JSON.stringify(links));
-}
-
-// RENDER LIENS
-function renderLinks() {
-  linksContainer.innerHTML = "";
-  links.forEach(link => {
-    const div = document.createElement("div");
-    div.classList.add("link-item");
-    div.innerHTML = `<a href="${link.url}" target="_blank"><img src="${link.img}" alt=""><p>${link.title}</p></a>`;
-    linksContainer.appendChild(div);
-  });
-}
-
-// AJOUT LIEN
-document.getElementById("add-link").addEventListener("click", () => {
-  const title = document.getElementById("link-title").value;
-  const url = document.getElementById("link-url").value;
-  let img = document.getElementById("link-image").value;
-  if (!img) {
-    if (url.includes("drive")) img = "assets/icon-doc.png";
-    else if (url.includes("youtube")) img = "assets/icon-video.png";
-    else img = "assets/icon-link.png";
-  }
-  links.push({ title, url, img });
-  localStorage.setItem(LS_LINKS, JSON.stringify(links));
-  renderAll();
-});
-
-// ADMIN LOGIN
-const correctPass = "beeO2025";
-document.getElementById("login-btn").addEventListener("click", () => {
-  const input = document.getElementById("admin-pass").value;
-  if (input === correctPass) {
-    document.getElementById("login-box").style.display = "none";
-    document.getElementById("admin-content").style.display = "block";
-  } else {
-    document.getElementById("login-error").style.display = "block";
-  }
-});
-
-// ACCORDIONS
-document.querySelectorAll(".accordion-header").forEach(header => {
-  header.addEventListener("click", () => {
-    const content = header.nextElementSibling;
-    content.style.display = content.style.display === "block" ? "none" : "block";
-  });
-});
-
-// BOUTON RETOUR EN HAUT
-const scrollBtn = document.getElementById("scrollTopBtn");
-window.onscroll = function() {
-  scrollBtn.style.display = (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) ? "block" : "none";
-};
-scrollBtn.addEventListener("click", () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-
-// LIGHTBOX
-const lightbox = document.getElementById("lightbox");
-const lightboxImg = document.getElementById("lightbox-img");
-document.querySelectorAll(".lightbox-item").forEach(img => {
-  img.addEventListener("click", () => {
-    lightbox.style.display = "flex";
-    lightboxImg.src = img.src;
-  });
-});
-document.querySelector(".close-lightbox").addEventListener("click", () => {
-  lightbox.style.display = "none";
-});
-
-// RENDER ALL
-function renderAll() {
-  renderNews();
-  renderArchived();
-  renderLinks();
-}
-renderAll();
