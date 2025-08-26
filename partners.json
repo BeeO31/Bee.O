@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Facebook",
+    "logo": "facebook.png",
+    "link": "https://facebook.com"
+  },
+  {
+    "name": "Instagram",
+    "logo": "instagram.png",
+    "link": "https://instagram.com"
+  },
+  {
+    "name": "Apple",
+    "logo": "apple.png",
+    "link": "https://apple.com"
+  }
+]
