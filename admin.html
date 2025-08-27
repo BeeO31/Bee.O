@@ -19,27 +19,25 @@
     </div>
 </header>
 
-<div class="admin-container">
+<div class="admin-container" id="admin-content">
     <div class="admin-section" id="actus-admin">
-        <h2 class="centered-title"><i class="fa-regular fa-newspaper"></i> Actualités</h2>
+        <h2><i class="fa-regular fa-newspaper"></i> Actualités</h2>
         <div class="actus-form-grid">
             <input type="text" id="actu-title" placeholder="Titre de l'actualité" oninput="previewActu()">
             <input type="text" id="actu-img" placeholder="URL de l'image (optionnel)" oninput="previewActu()">
-            <textarea id="actu-text" placeholder="Description / texte" oninput="previewActu()"></textarea>
+            <textarea id="actu-text" placeholder="Texte de l'actualité" oninput="previewActu()"></textarea>
             <select id="actu-pos" onchange="previewActu()">
                 <option value="left">Image à gauche</option>
                 <option value="right">Image à droite</option>
             </select>
             <button onclick="addActu()" id="addActuBtn"><i class="fa-solid fa-plus"></i> Ajouter</button>
         </div>
-        <div class="actu-preview-container" id="actu-preview">
-            Prévisualisation en direct...
-        </div>
+        <div id="actu-preview" class="actu-preview-container"></div>
         <div id="actus-list" class="admin-list"></div>
     </div>
 
     <div class="admin-section" id="liens-admin">
-        <h2 class="centered-title"><i class="fa-solid fa-link"></i> Liens utiles</h2>
+        <h2><i class="fa-solid fa-link"></i> Liens utiles</h2>
         <input type="text" id="lien-title" placeholder="Titre du lien">
         <input type="text" id="lien-url" placeholder="URL">
         <button onclick="addLien()" id="addLienBtn"><i class="fa-solid fa-plus"></i> Ajouter</button>
@@ -47,23 +45,29 @@
     </div>
 
     <div class="admin-section" id="galerie-admin">
-        <h2 class="centered-title"><i class="fa-regular fa-image"></i> Galerie</h2>
+        <h2><i class="fa-regular fa-image"></i> Galerie</h2>
         <input type="text" id="gallery-img" placeholder="URL de l'image">
-        <button onclick="addImage()" id="addImageBtn"><i class="fa-solid fa-plus"></i> Ajouter</button>
+        <button onclick="addImage()"" id="addImageBtn"><i class="fa-solid fa-plus"></i> Ajouter</button>
         <div id="gallery-list" class="admin-list"></div>
     </div>
 
     <div class="admin-section" id="partners-admin">
-        <h2 class="centered-title"><i class="fa-regular fa-handshake"></i> Partenaires</h2>
+        <h2><i class="fa-regular fa-handshake"></i> Partenaires</h2>
         <input type="text" id="partner-name" placeholder="Nom du partenaire">
         <input type="text" id="partner-logo" placeholder="Nom du fichier logo">
         <input type="text" id="partner-link" placeholder="Lien (facultatif)">
-        <button onclick="addPartner()" id="addPartnerBtn"><i class="fa-solid fa-plus"></i> Ajouter</button>
+        <button onclick="addPartner()"" id="addPartnerBtn"><i class="fa-solid fa-plus"></i> Ajouter</button>
         <div id="partners-list" class="admin-list"></div>
     </div>
+
 </div>
 
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<div id="login-form" class="login-container">
+    <h2>Mot de passe Admin</h2>
+    <input type="password" id="admin-password" placeholder="Entrez le mot de passe">
+    <button onclick="login()"><i class="fa-solid fa-right-to-bracket"></i> Connexion</button>
+</div>
+
 <script src="admin.js"></script>
 
 </body>

@@ -1,124 +1,108 @@
-document.addEventListener("DOMContentLoaded", () => {
-  renderAll();
+document.addEventListener("DOMContentLoaded", function() {
+    renderAllContent();
 
-  // Scroll-top button
-  const scrollBtn = document.getElementById("scrollTopBtn");
-  window.addEventListener("scroll", () => {
-    scrollBtn.style.display = (window.scrollY > 200) ? "block" : "none";
-  });
-  scrollBtn.addEventListener("click", () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
+    window.addEventListener('storage', (event) => {
+        if (event.key === "site:update") {
+            renderAllContent();
+        }
+    });
 
-  // Init carrousel
-  initPartnersCarousel();
+    const scrollUpButton = document.getElementById('scrollTopBtn');
+    if (scrollUpButton) {
+        window.onscroll = function() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                scrollUpButton.style.display = "block";
+            } else {
+                scrollUpButton.style.display = "none";
+            }
+        };
+    }
 });
 
-function renderAll() {
-  renderActus();
-  renderLiens();
-  renderGalerie();
-  renderPartners();
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
+
+function renderAllContent() {
+    renderActus();
+    renderLiens();
+    renderGallery();
+    renderPartners();
 }
 
 function renderActus() {
-  const container = document.getElementById("actus-container");
-  container.innerHTML = "";
-
-  const actus = JSON.parse(localStorage.getItem("actus") || "[]");
-
-  actus.forEach((a, i) => {
-    const div = document.createElement("div");
-    div.className = `actu-item ${a.pos === "right" ? "img-right" : "img-left"}`;
-    div.innerHTML = `
-      ${a.img ? `<img src="${a.img}" class="actu-img" alt="">` : ""}
-      <div class="actu-content">
-        <h3 class="actu-title" style="color:${i===0?'rgb(255,47,155)':(i%2?'#FFD700':'#4caf50')}">${a.titre}</h3>
-        <p>${a.texte}</p>
-      </div>
-    `;
-    container.appendChild(div);
-  });
+    const container = document.getElementById("actus-container");
+    const actus = JSON.parse(localStorage.getItem("actus") || "[]");
+    container.innerHTML = "";
+    const colors = ['var(--green)', 'var(--yellow)'];
+    if (actus.length > 0) {
+        actus.forEach((actu, index) => {
+            const actuItem = document.createElement("div");
+            actuItem.className = `actu-item img-${actu.pos}`;
+            
+            let titleColor;
+            if (index === 0) {
+                titleColor = 'var(--pink)';
+            } else {
+                titleColor = colors[(index - 1) % 2];
+            }
+            
+            actuItem.innerHTML = `
+                ${actu.img ? `<img src="${actu.img}" alt="${actu.titre}">` : ""}
+                <div class="actu-content">
+                    <h3 style="color:${titleColor};">${actu.titre}</h3>
+                    <p>${actu.texte}</p>
+                </div>
+            `;
+            container.appendChild(actuItem);
+        });
+    } else {
+        container.innerHTML = "<p>Aucune actualité pour le moment.</p>";
+    }
 }
 
 function renderLiens() {
-  const container = document.getElementById("liens-container");
-  container.innerHTML = "";
-  const liens = JSON.parse(localStorage.getItem("liens") || "[]");
-
-  liens.forEach(l => {
-    const a = document.createElement("a");
-    a.href = l.url;
-    a.className = "link-card";
-    a.target = "_blank";
-    a.innerHTML = `<img src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(l.url)}" alt="Icone ${l.titre}"><p>${l.titre}</p>`;
-    container.appendChild(a);
-  });
+    const container = document.getElementById("liens-container");
+    const liens = JSON.parse(localStorage.getItem("liens") || "[]");
+    container.innerHTML = "";
+    liens.forEach(lien => {
+        const linkCard = document.createElement("a");
+        linkCard.href = lien.url;
+        linkCard.target = "_blank";
+        linkCard.className = "link-card";
+        linkCard.innerHTML = `
+            <i class="fa-solid fa-link"></i>
+            <span>${lien.title}</span>
+        `;
+        container.appendChild(linkCard);
+    });
 }
 
-function renderGalerie() {
-  const container = document.getElementById("galerie-container");
-  container.innerHTML = "";
-  const images = JSON.parse(localStorage.getItem("gallery") || "[]");
-
-  images.forEach(img => {
-    const div = document.createElement("div");
-    div.className = "gallery-item";
-    div.innerHTML = `<img src="${img}" alt="Photo Galerie">`;
-    container.appendChild(div);
-  });
+function renderGallery() {
+    const container = document.getElementById("galerie-container");
+    const images = JSON.parse(localStorage.getItem("gallery") || "[]");
+    container.innerHTML = "";
+    images.forEach(img => {
+        const galleryItem = document.createElement("div");
+        galleryItem.className = "gallery-item";
+        galleryItem.innerHTML = `<img src="${img}" alt="Image de la galerie">`;
+        container.appendChild(galleryItem);
+    });
 }
 
-async function renderPartners() {
-  const wrap = document.getElementById("partnersCarousel");
-  if (!wrap) return;
-  wrap.innerHTML = "";
-
-  let base = [];
-  try {
-    const res = await fetch("partners.json");
-    base = await res.json();
-  } catch(e){ base = []; }
-
-  const extras = JSON.parse(localStorage.getItem("partners") || "[]");
-  const partners = [...base, ...extras];
-
-  partners.forEach(p => {
-    const div = document.createElement("div");
-    div.className = "partner";
-    const img = `<img src="assets/logos/${p.logo}" alt="${p.name}">`;
-    div.innerHTML = p.link ? `<a href="${p.link}" target="_blank">${img}</a>` : img;
-    wrap.appendChild(div);
-  });
+function renderPartners() {
+    const container = document.getElementById("partnersCarousel");
+    const partners = JSON.parse(localStorage.getItem("partners") || "[]");
+    container.innerHTML = "";
+    partners.forEach(p => {
+        const partnerDiv = document.createElement("a");
+        partnerDiv.href = p.link || "#";
+        partnerDiv.className = "partner";
+        // Ajout de l'attribut 'title' au survol de l'image
+        partnerDiv.innerHTML = `<img src="assets/logos/${p.logo}" alt="${p.name}" title="${p.name}">`;
+        container.appendChild(partnerDiv);
+    });
 }
-
-function initPartnersCarousel() {
-  const carousel = document.getElementById("partnersCarousel");
-  if (!carousel) return;
-
-  const animationDuration = 15000;
-  const clone = carousel.cloneNode(true);
-  carousel.parentNode.appendChild(clone);
-
-  const style = document.createElement('style');
-  style.innerHTML = `
-    .carousel-wrapper > div {
-      animation: scroll ${animationDuration / 1000}s linear infinite;
-    }
-    .carousel-wrapper > div:nth-child(2) {
-      animation-delay: -${animationDuration / 2000}s;
-    }
-    @keyframes scroll {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-100%); }
-    }
-  `;
-  document.head.appendChild(style);
-}
-
-// Rafraîchir la page si des changements sont faits via l'admin
-window.addEventListener("storage", (event) => {
-  if (event.key === "site:update") {
-    renderAll();
-  }
-});

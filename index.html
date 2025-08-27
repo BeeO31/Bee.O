@@ -22,17 +22,17 @@
     <a href="#infos"><i class="fa-solid fa-circle-info"></i> Infos Pratiques</a>
     <a href="#liens"><i class="fa-solid fa-link"></i> Liens Utiles</a>
     <a href="#galerie"><i class="fa-solid fa-image"></i> Galerie</a>
-    <a href="admin.html" target="_blank"><i class="fa-solid fa-user"></i> Admin</a>
+    <a href="#partenaires"><i class="fa-regular fa-handshake"></i> Partenaires</a>
   </nav>
 
   <main>
     <section id="actualites" class="section">
-      <h2 class="centered-title">Actualités</h2>
+      <h2><i class="fa-solid fa-newspaper"></i> Actualités</h2>
       <div id="actus-container" class="actus-grid"></div>
     </section>
 
     <section id="infos" class="section">
-      <h2 class="centered-title">Infos Pratiques</h2>
+      <h2><i class="fa-solid fa-circle-info"></i> Infos Pratiques</h2>
       <div class="infos-container">
         <button class="btn small-btn" onclick="window.open('form-adhesion.html','_blank')">Adhésion</button>
         <button class="btn small-btn" onclick="window.open('form-inscription.html','_blank')">Inscription</button>
@@ -41,27 +41,47 @@
     </section>
 
     <section id="liens" class="section">
-      <h2 class="centered-title">Liens Utiles</h2>
+      <h2><i class="fa-solid fa-link"></i> Liens Utiles</h2>
       <div id="liens-container" class="links-grid"></div>
     </section>
 
     <section id="galerie" class="section">
-      <h2 class="centered-title">Galerie</h2>
+      <h2><i class="fa-solid fa-image"></i> Galerie</h2>
       <div id="galerie-container" class="galerie-grid"></div>
     </section>
 
-    <section class="partners-carousel section">
-      <h2>Nos partenaires</h2>
+    <section id="partenaires" class="partners-carousel section">
+      <h2><i class="fa-regular fa-handshake"></i> Partenaires</h2>
       <div class="carousel-wrapper">
         <div class="carousel" id="partnersCarousel"></div>
       </div>
     </section>
   </main>
 
-  <footer>&copy; 2025 Bee.O - Tous droits réservés</footer>
+  <footer>
+    <div class="social-links-container">
+        <a href="https://www.facebook.com/people/BeeO/100073179518116/" target="_blank" class="social-item">
+          <div class="social-icon facebook-icon"><i class="fab fa-facebook-f"></i></div>
+          <span>Facebook</span>
+        </a>
+        <a href="https://www.instagram.com/" target="_blank" class="social-item">
+          <div class="social-icon instagram-icon"><i class="fab fa-instagram"></i></div>
+          <span>Instagram</span>
+        </a>
+        <a href="https://chat.whatsapp.com/HSyfCzSkHIyEdiVlMi6JBT" target="_blank" class="social-item">
+          <div class="social-icon whatsapp-icon"><i class="fab fa-whatsapp"></i></div>
+          <span>WhatsApp</span>
+        </a>
+    </div>
+    <p>Tous droits réservés © Bee.O - 2025</p>
+    <p>
+      <a href="mentions-legales.html">Mentions légales</a> |
+      <a href="confidentialite.html">Politique de confidentialité</a> |
+      <a href="admin.html">Admin</a>
+    </p>
+  </footer>
 
-  <button id="scrollTopBtn" class="scroll-top" aria-label="Retour en haut">
-    <i class="fa-solid fa-arrow-up"></i>
-  </button>
+  <button id="scrollTopBtn" class="scroll-top" onclick="scrollToTop()"><i class="fa-solid fa-arrow-up"></i></button>
+
 </body>
 </html>
