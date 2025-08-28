@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire de Renseignement - Bee.O</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<header class="admin-header">
+    <div class="admin-nav">
+        <a href="index.html"><i class="fa-solid fa-arrow-left"></i> Retour au site</a>
+    </div>
+    <h1>Formulaire de Renseignement</h1>
+    <div class="admin-nav"></div>
+</header>
+
+<main>
+    <div class="form-container">
+        <form name="renseignement" method="POST" data-netlify="true" action="./success-renseignement.html">
+            <label for="pseudo">Votre pseudo (ou nom): <span class="required-star">*</span></label>
+            <input type="text" id="pseudo" name="pseudo" placeholder="Ex: Jean D." required>
+
+            <label for="question">Votre question: <span class="required-star">*</span></label>
+            <textarea id="question" name="question" rows="5" placeholder="Écrivez votre question ici..." required></textarea>
+
+            <button type="submit" class="btn">Envoyer</button>
+        </form>
+    </div>
+</main>
+
+</body>
+</html>

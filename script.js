@@ -1,9 +1,22 @@
 document.addEventListener("DOMContentLoaded", function() {
-    renderAllContent();
+    const adhesionDateInput = document.getElementById("adhesion-date");
+    if (adhesionDateInput) {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        adhesionDateInput.value = `${yyyy}-${mm}-${dd}`;
+    }
+
+    if (document.getElementById("actus-container")) {
+        renderAllContent();
+    }
 
     window.addEventListener('storage', (event) => {
         if (event.key === "site:update") {
-            renderAllContent();
+            if (document.getElementById("actus-container")) {
+                renderAllContent();
+            }
         }
     });
 
@@ -28,6 +41,7 @@ function scrollToTop() {
 
 function renderAllContent() {
     renderActus();
+    renderFaqs();
     renderLiens();
     renderGallery();
     renderPartners();
@@ -42,14 +56,12 @@ function renderActus() {
         actus.forEach((actu, index) => {
             const actuItem = document.createElement("div");
             actuItem.className = `actu-item img-${actu.pos}`;
-            
             let titleColor;
             if (index === 0) {
                 titleColor = 'var(--pink)';
             } else {
                 titleColor = colors[(index - 1) % 2];
             }
-            
             actuItem.innerHTML = `
                 ${actu.img ? `<img src="${actu.img}" alt="${actu.titre}">` : ""}
                 <div class="actu-content">
@@ -100,9 +112,61 @@ function renderPartners() {
     partners.forEach(p => {
         const partnerDiv = document.createElement("a");
         partnerDiv.href = p.link || "#";
+        // Ajout de target="_blank" et rel="noopener noreferrer"
+        partnerDiv.target = "_blank";
+        partnerDiv.rel = "noopener noreferrer";
         partnerDiv.className = "partner";
-        // Ajout de l'attribut 'title' au survol de l'image
         partnerDiv.innerHTML = `<img src="assets/logos/${p.logo}" alt="${p.name}" title="${p.name}">`;
         container.appendChild(partnerDiv);
     });
+}
+
+function renderFaqs() {
+    const container = document.getElementById("faq-container");
+    const faqs = JSON.parse(localStorage.getItem("faqs") || "[]");
+    container.innerHTML = "";
+    if (faqs.length > 0) {
+        faqs.forEach((faq, index) => {
+            const faqItem = document.createElement("div");
+            faqItem.className = "faq-card";
+            const linksHtml = faq.links.filter(link => link).map(link => `
+                <a href="${link}" target="_blank" class="faq-link">
+                    <i class="fa-solid fa-link"></i> Lien Utile
+                </a>
+            `).join('');
+            faqItem.innerHTML = `
+                <div class="faq-header">
+                    <h3>${faq.question}</h3>
+                    <span class="faq-id">${faq.id}</span>
+                </div>
+                <p>${faq.answer}</p>
+                ${linksHtml ? `<div class="faq-links">${linksHtml}</div>` : ''}
+                <div class="vote-container">
+                    <span>Cette réponse vous a-t-elle été utile ?</span>
+                    <button onclick="voteFaq(${index}, 'up')" class="vote-btn upvote">
+                        <i class="fa-solid fa-thumbs-up"></i> ${faq.votes.up}
+                    </button>
+                    <button onclick="voteFaq(${index}, 'down')" class="vote-btn downvote">
+                        <i class="fa-solid fa-thumbs-down"></i> ${faq.votes.down}
+                    </button>
+                </div>
+            `;
+            container.appendChild(faqItem);
+        });
+    } else {
+        container.innerHTML = "<p>Aucune question/réponse pour le moment.</p>";
+    }
+}
+
+function voteFaq(index, type) {
+    const faqs = JSON.parse(localStorage.getItem("faqs") || "[]");
+    if (faqs[index]) {
+        if (type === 'up') {
+            faqs[index].votes.up += 1;
+        } else if (type === 'down') {
+            faqs[index].votes.down += 1;
+        }
+        localStorage.setItem("faqs", JSON.stringify(faqs));
+        renderFaqs();
+    }
 }

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire d'Adhésion - Bee.O</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<header class="admin-header">
+    <div class="admin-nav">
+        <a href="index.html"><i class="fa-solid fa-arrow-left"></i> Retour au site</a>
+    </div>
+    <h1>Formulaire d'Adhésion</h1>
+    <div class="admin-nav"></div>
+</header>
+
+<main>
+    <div class="form-container">
+        <form name="adhesion" method="POST" data-netlify="true" action="./success.html">
+            <label for="nom">Nom: <span class="required-star">*</span></label>
+            <input type="text" id="nom" name="nom" required>
+
+            <label for="prenom">Prénom: <span class="required-star">*</span></label>
+            <input type="text" id="prenom" name="prenom" required>
+
+            <label for="adresse">Adresse: <span class="required-star">*</span></label>
+            <input type="text" id="adresse" name="adresse" required>
+
+            <label for="email">E-mail: <span class="required-star">*</span></label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="telephone">Téléphone: <span class="required-star">*</span></label>
+            <input type="tel" id="telephone" name="telephone" required>
+
+            <fieldset>
+                <legend>Moyen de paiement: <span class="required-star">*</span></legend>
+                <label><input type="radio" name="paiement" value="especes" required checked> Espèces</label>
+                <label><input type="radio" name="paiement" value="cheque"> Chèque</label>
+                <label><input type="radio" name="paiement" value="virement"> Virement <a href="https://drive.google.com/file/d/1xqtZPMYgtBasakKPIEOrp1yN47OzMMlx/view?usp=drive_link" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-circle-info"></i></a></label>
+            </fieldset>
+
+            <label for="adhesion-date">Date d'adhésion:</label>
+            <input type="date" id="adhesion-date" name="date">
+
+            <button type="submit" class="btn">Adhérer</button>
+        </form>
+    </div>
+</main>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const adhesionDateInput = document.getElementById("adhesion-date");
+        if (adhesionDateInput) {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            adhesionDateInput.value = `${yyyy}-${mm}-${dd}`;
+        }
+    });
+</script>
+
+</body>
+</html>

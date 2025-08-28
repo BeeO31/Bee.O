@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function login() {
     const password = document.getElementById("admin-password").value;
+    // Remplacez 'beeopass' par le mot de passe de votre choix pour le test local
     if (password === "beeopass") {
         localStorage.setItem("adminLoggedIn", "true");
         window.location.reload();
@@ -40,57 +41,55 @@ let editingLienIndex = null;
 let editingGalleryIndex = null;
 let editingPartnerIndex = null;
 
+// Actualités
 function addActu() {
     const titre = document.getElementById("actu-title").value;
     const texte = document.getElementById("actu-text").value;
     const img = document.getElementById("actu-img").value;
     const pos = document.getElementById("actu-pos").value;
+    const actu = { titre, texte, img, pos };
     const actus = JSON.parse(localStorage.getItem("actus") || "[]");
+    
     if (editingActuIndex !== null) {
-        actus[editingActuIndex] = { titre, texte, img, pos };
+        actus[editingActuIndex] = actu;
+        editingActuIndex = null;
     } else {
-        actus.unshift({ titre, texte, img, pos });
+        actus.push(actu);
     }
+
     localStorage.setItem("actus", JSON.stringify(actus));
-    document.getElementById("actu-title").value = "";
-    document.getElementById("actu-text").value = "";
-    document.getElementById("actu-img").value = "";
-    document.getElementById("addActuBtn").textContent = "Ajouter";
-    editingActuIndex = null;
     renderActusList();
     localStorage.setItem("site:update", Date.now());
+    clearActuForm();
 }
 
 function renderActusList() {
-    const container = document.getElementById("actus-list");
     const actus = JSON.parse(localStorage.getItem("actus") || "[]");
+    const container = document.getElementById("actus-list");
     container.innerHTML = "";
     actus.forEach((a, i) => {
-        const div = document.createElement("div");
-        div.innerHTML = `
-            <div style="display:flex;align-items:center;">
-                ${a.img ? `<img src="${a.img}" alt="Image">` : ""}
-                <p><strong>${a.titre}</strong><br>${a.texte.slice(0, 100)}...</p>
-            </div>
-            <div>
-                <button onclick="editActu(${i})"><i class="fa-solid fa-pen-to-square"></i> Modifier</button>
-                <button onclick="delActu(${i})" class="delete-btn"><i class="fa-solid fa-trash"></i> Supprimer</button>
+        const item = document.createElement("div");
+        item.innerHTML = `
+            ${a.img ? `<img src="${a.img}" alt="${a.titre}">` : ''}
+            <span><strong>${a.titre}</strong></span>
+            <div class="admin-actions">
+                <button onclick="editActu(${i})">Modifier</button>
+                <button onclick="delActu(${i})" class="delete-btn">Supprimer</button>
             </div>
         `;
-        container.appendChild(div);
+        container.appendChild(item);
     });
 }
 
 function editActu(index) {
     const actus = JSON.parse(localStorage.getItem("actus") || "[]");
-    const actu = actus[index];
-    document.getElementById("actu-title").value = actu.titre;
-    document.getElementById("actu-text").value = actu.texte;
-    document.getElementById("actu-img").value = actu.img;
-    document.getElementById("actu-pos").value = actu.pos;
+    const a = actus[index];
+    document.getElementById("actu-title").value = a.titre;
+    document.getElementById("actu-text").value = a.texte;
+    document.getElementById("actu-img").value = a.img;
+    document.getElementById("actu-pos").value = a.pos;
     document.getElementById("addActuBtn").textContent = "Modifier";
     editingActuIndex = index;
-    previewActu();
 }
 
 function delActu(index) {
@@ -101,50 +100,61 @@ function delActu(index) {
     localStorage.setItem("site:update", Date.now());
 }
 
+function clearActuForm() {
+    document.getElementById("actu-title").value = "";
+    document.getElementById("actu-text").value = "";
+    document.getElementById("actu-img").value = "";
+    document.getElementById("actu-pos").value = "left";
+    document.getElementById("addActuBtn").textContent = "Ajouter";
+    editingActuIndex = null;
+    previewActu();
+}
+
+// Liens utiles
 function addLien() {
-    const title = document.getElementById("lien-title").value;
+    const titre = document.getElementById("lien-title").value;
     const url = document.getElementById("lien-url").value;
+    const icon = document.getElementById("lien-icon").value;
+    const lien = { titre, url, icon };
     const liens = JSON.parse(localStorage.getItem("liens") || "[]");
+
     if (editingLienIndex !== null) {
-        liens[editingLienIndex] = { title, url };
+        liens[editingLienIndex] = lien;
+        editingLienIndex = null;
     } else {
-        liens.unshift({ title, url });
+        liens.push(lien);
     }
+    
     localStorage.setItem("liens", JSON.stringify(liens));
-    document.getElementById("lien-title").value = "";
-    document.getElementById("lien-url").value = "";
-    document.getElementById("addLienBtn").textContent = "Ajouter";
-    editingLienIndex = null;
     renderLiensList();
     localStorage.setItem("site:update", Date.now());
+    clearLienForm();
 }
 
 function renderLiensList() {
-    const container = document.getElementById("liens-list");
     const liens = JSON.parse(localStorage.getItem("liens") || "[]");
+    const container = document.getElementById("liens-list");
     container.innerHTML = "";
     liens.forEach((l, i) => {
-        const div = document.createElement("div");
-        div.className = "admin-link-card";
-        div.innerHTML = `
-            <a href="${l.url}" target="_blank" class="link-card-content">
-                <i class="fa-solid fa-link"></i>
-                <span>${l.title}</span>
-            </a>
-            <div class="link-card-actions">
-                <button onclick="editLien(${i})"><i class="fa-solid fa-pen-to-square"></i> Modifier</button>
-                <button onclick="delLien(${i})" class="delete-btn"><i class="fa-solid fa-trash"></i> Supprimer</button>
+        const item = document.createElement("div");
+        item.innerHTML = `
+            <img src="assets/icons/${l.icon}" alt="${l.titre}">
+            <span>${l.titre}</span>
+            <div class="admin-actions">
+                <button onclick="editLien(${i})">Modifier</button>
+                <button onclick="delLien(${i})" class="delete-btn">Supprimer</button>
             </div>
         `;
-        container.appendChild(div);
+        container.appendChild(item);
     });
 }
 
 function editLien(index) {
     const liens = JSON.parse(localStorage.getItem("liens") || "[]");
-    const lien = liens[index];
-    document.getElementById("lien-title").value = lien.title;
-    document.getElementById("lien-url").value = lien.url;
+    const l = liens[index];
+    document.getElementById("lien-title").value = l.titre;
+    document.getElementById("lien-url").value = l.url;
+    document.getElementById("lien-icon").value = l.icon;
     document.getElementById("addLienBtn").textContent = "Modifier";
     editingLienIndex = index;
 }
@@ -157,94 +167,107 @@ function delLien(index) {
     localStorage.setItem("site:update", Date.now());
 }
 
+function clearLienForm() {
+    document.getElementById("lien-title").value = "";
+    document.getElementById("lien-url").value = "";
+    document.getElementById("lien-icon").value = "globe.png";
+    document.getElementById("addLienBtn").textContent = "Ajouter";
+    editingLienIndex = null;
+}
+
+// Galerie
 function addImage() {
-    const img = document.getElementById("gallery-img").value;
-    const images = JSON.parse(localStorage.getItem("gallery") || "[]");
+    const imgUrl = document.getElementById("gallery-img").value;
+    const gallery = JSON.parse(localStorage.getItem("gallery") || "[]");
+    
     if (editingGalleryIndex !== null) {
-        images[editingGalleryIndex] = img;
+        gallery[editingGalleryIndex] = imgUrl;
+        editingGalleryIndex = null;
     } else {
-        images.unshift(img);
+        gallery.push(imgUrl);
     }
-    localStorage.setItem("gallery", JSON.stringify(images));
-    document.getElementById("gallery-img").value = "";
-    document.getElementById("addImageBtn").textContent = "Ajouter";
-    editingGalleryIndex = null;
+
+    localStorage.setItem("gallery", JSON.stringify(gallery));
     renderGalleryList();
     localStorage.setItem("site:update", Date.now());
+    clearGalleryForm();
 }
 
 function renderGalleryList() {
+    const gallery = JSON.parse(localStorage.getItem("gallery") || "[]");
     const container = document.getElementById("gallery-list");
-    const images = JSON.parse(localStorage.getItem("gallery") || "[]");
     container.innerHTML = "";
-    images.forEach((img, i) => {
-        const div = document.createElement("div");
-        div.innerHTML = `
-            <img src="${img}" alt="Image Galerie">
-            <div>
-                <button onclick="editImage(${i})"><i class="fa-solid fa-pen-to-square"></i> Modifier</button>
-                <button onclick="delImage(${i})" class="delete-btn"><i class="fa-solid fa-trash"></i> Supprimer</button>
+    gallery.forEach((img, i) => {
+        const item = document.createElement("div");
+        item.innerHTML = `
+            <img src="${img}" alt="Image de la galerie">
+            <div class="admin-actions">
+                <button onclick="editImage(${i})">Modifier</button>
+                <button onclick="delImage(${i})" class="delete-btn">Supprimer</button>
             </div>
         `;
-        container.appendChild(div);
+        container.appendChild(item);
     });
 }
 
 function editImage(index) {
-    const images = JSON.parse(localStorage.getItem("gallery") || "[]");
-    document.getElementById("gallery-img").value = images[index];
+    const gallery = JSON.parse(localStorage.getItem("gallery") || "[]");
+    const imgUrl = gallery[index];
+    document.getElementById("gallery-img").value = imgUrl;
     document.getElementById("addImageBtn").textContent = "Modifier";
     editingGalleryIndex = index;
 }
 
 function delImage(index) {
-    const images = JSON.parse(localStorage.getItem("gallery") || "[]");
-    images.splice(index, 1);
-    localStorage.setItem("gallery", JSON.stringify(images));
+    const gallery = JSON.parse(localStorage.getItem("gallery") || "[]");
+    gallery.splice(index, 1);
+    localStorage.setItem("gallery", JSON.stringify(gallery));
     renderGalleryList();
     localStorage.setItem("site:update", Date.now());
 }
 
+function clearGalleryForm() {
+    document.getElementById("gallery-img").value = "";
+    document.getElementById("addImageBtn").textContent = "Ajouter";
+    editingGalleryIndex = null;
+}
+
+// Partenaires
 function addPartner() {
     const name = document.getElementById("partner-name").value;
     const logo = document.getElementById("partner-logo").value;
-    let link = document.getElementById("partner-link").value;
-    
-    // Ajout du protocole si manquant
-    if (link && !link.startsWith('http://') && !link.startsWith('https://')) {
-        link = 'https://' + link;
-    }
-    
+    const link = document.getElementById("partner-link").value;
+    const partner = { name, logo, link };
     const partners = JSON.parse(localStorage.getItem("partners") || "[]");
+
     if (editingPartnerIndex !== null) {
-        partners[editingPartnerIndex] = { name, logo, link };
+        partners[editingPartnerIndex] = partner;
+        editingPartnerIndex = null;
     } else {
-        partners.unshift({ name, logo, link });
+        partners.push(partner);
     }
+    
     localStorage.setItem("partners", JSON.stringify(partners));
-    document.getElementById("partner-name").value = "";
-    document.getElementById("partner-logo").value = "";
-    document.getElementById("partner-link").value = "";
-    document.getElementById("addPartnerBtn").textContent = "Ajouter";
-    editingPartnerIndex = null;
     renderPartnersList();
     localStorage.setItem("site:update", Date.now());
+    clearPartnerForm();
 }
 
 function renderPartnersList() {
-    const container = document.getElementById("partners-list");
     const partners = JSON.parse(localStorage.getItem("partners") || "[]");
+    const container = document.getElementById("partners-list");
     container.innerHTML = "";
     partners.forEach((p, i) => {
-        const div = document.createElement("div");
-        div.innerHTML = `
-            <p>${p.name}</p>
-            <div>
-                <button onclick="editPartner(${i})"><i class="fa-solid fa-pen-to-square"></i> Modifier</button>
-                <button onclick="delPartner(${i})" class="delete-btn"><i class="fa-solid fa-trash"></i> Supprimer</button>
+        const item = document.createElement("div");
+        item.innerHTML = `
+            <img src="assets/logos/${p.logo}" alt="${p.name} logo">
+            <span>${p.name}</span>
+            <div class="admin-actions">
+                <button onclick="editPartner(${i})">Modifier</button>
+                <button onclick="delPartner(${i})" class="delete-btn">Supprimer</button>
             </div>
         `;
-        container.appendChild(div);
+        container.appendChild(item);
     });
 }
 
@@ -266,6 +289,14 @@ function delPartner(index) {
     localStorage.setItem("site:update", Date.now());
 }
 
+function clearPartnerForm() {
+    document.getElementById("partner-name").value = "";
+    document.getElementById("partner-logo").value = "";
+    document.getElementById("partner-link").value = "";
+    document.getElementById("addPartnerBtn").textContent = "Ajouter";
+    editingPartnerIndex = null;
+}
+
 function previewActu() {
     const titre = document.getElementById("actu-title").value;
     const texte = document.getElementById("actu-text").value;
@@ -276,8 +307,8 @@ function previewActu() {
         <div style="display:flex;gap:10px;align-items:flex-start;border: 1px dashed #ccc;padding: 15px;">
             ${pos === "left" ? `<img src="${img}" style="width:80px;height:auto;">` : ""}
             <div>
-                <h4 style="color:var(--pink);">${titre}</h4>
-                <p>${texte}</p>
+                <h4 style="color:var(--green);margin-top:0;">${titre}</h4>
+                <p style="font-size:0.9rem;margin:0;">${texte}</p>
             </div>
             ${pos === "right" ? `<img src="${img}" style="width:80px;height:auto;">` : ""}
         </div>
