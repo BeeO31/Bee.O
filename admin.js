@@ -34,12 +34,20 @@ function renderAllAdminContent() {
     renderLiensList();
     renderGalleryList();
     renderPartnersList();
+    renderFAQList();
+    // Nouvelles fonctions pour les infos pratiques
+    document.getElementById("info-address").value = localStorage.getItem("info:address") || "";
+    document.getElementById("info-hours").value = localStorage.getItem("info:hours") || "";
+    renderContactsList();
 }
 
 let editingActuIndex = null;
 let editingLienIndex = null;
 let editingGalleryIndex = null;
 let editingPartnerIndex = null;
+let editingContactIndex = null;
+let editingFAQIndex = null;
+
 
 // Actualités
 function addActu() {
@@ -54,7 +62,7 @@ function addActu() {
         actus[editingActuIndex] = actu;
         editingActuIndex = null;
     } else {
-        actus.push(actu);
+        actus.unshift(actu);
     }
 
     localStorage.setItem("actus", JSON.stringify(actus));
@@ -108,6 +116,84 @@ function clearActuForm() {
     document.getElementById("addActuBtn").textContent = "Ajouter";
     editingActuIndex = null;
     previewActu();
+}
+
+//Infos Pratiques
+// Gérer les informations pratiques (adresse et horaires)
+function saveGeneralInfo() {
+    const address = document.getElementById("info-address").value;
+    const hours = document.getElementById("info-hours").value;
+    localStorage.setItem("info:address", address);
+    localStorage.setItem("info:hours", hours);
+    alert("Informations générales enregistrées !");
+    localStorage.setItem("site:update", Date.now());
+}
+
+// Gérer les contacts
+function addContact() {
+    const name = document.getElementById("contact-name").value;
+    const phone = document.getElementById("contact-phone").value;
+    if (!name || !phone) {
+        alert("Veuillez remplir le prénom et le numéro de téléphone.");
+        return;
+    }
+
+    const contacts = JSON.parse(localStorage.getItem("infos:contacts") || "[]");
+    const contact = { name, phone };
+
+    if (editingContactIndex !== null) {
+        contacts[editingContactIndex] = contact;
+        editingContactIndex = null;
+    } else {
+        contacts.push(contact);
+    }
+
+    localStorage.setItem("infos:contacts", JSON.stringify(contacts));
+    renderContactsList();
+    clearContactForm();
+    localStorage.setItem("site:update", Date.now());
+}
+
+function renderContactsList() {
+    const contacts = JSON.parse(localStorage.getItem("infos:contacts") || "[]");
+    const container = document.getElementById("contacts-list");
+    if (!container) return;
+    container.innerHTML = "";
+    contacts.forEach((c, i) => {
+        const item = document.createElement("div");
+        item.innerHTML = `
+            <span>${c.name} : ${c.phone}</span>
+            <div class="admin-actions">
+                <button onclick="editContact(${i})">Modifier</button>
+                <button onclick="delContact(${i})" class="delete-btn">Supprimer</button>
+            </div>
+        `;
+        container.appendChild(item);
+    });
+}
+
+function editContact(index) {
+    const contacts = JSON.parse(localStorage.getItem("infos:contacts") || "[]");
+    const contact = contacts[index];
+    document.getElementById("contact-name").value = contact.name;
+    document.getElementById("contact-phone").value = contact.phone;
+    document.getElementById("addContactBtn").textContent = "Modifier";
+    editingContactIndex = index;
+}
+
+function delContact(index) {
+    const contacts = JSON.parse(localStorage.getItem("infos:contacts") || "[]");
+    contacts.splice(index, 1);
+    localStorage.setItem("infos:contacts", JSON.stringify(contacts));
+    renderContactsList();
+    localStorage.setItem("site:update", Date.now());
+}
+
+function clearContactForm() {
+    document.getElementById("contact-name").value = "";
+    document.getElementById("contact-phone").value = "";
+    document.getElementById("addContactBtn").textContent = "Ajouter un contact";
+    editingContactIndex = null;
 }
 
 // Liens utiles
@@ -303,14 +389,101 @@ function previewActu() {
     const img = document.getElementById("actu-img").value;
     const pos = document.getElementById("actu-pos").value;
     const prev = document.getElementById("actu-preview");
-    prev.innerHTML = `
-        <div style="display:flex;gap:10px;align-items:flex-start;border: 1px dashed #ccc;padding: 15px;">
-            ${pos === "left" ? `<img src="${img}" style="width:80px;height:auto;">` : ""}
-            <div>
-                <h4 style="color:var(--green);margin-top:0;">${titre}</h4>
-                <p style="font-size:0.9rem;margin:0;">${texte}</p>
+
+    let imgElement = img ? `<img src="${img}" alt="Image de l'actualité" style="max-width:100%; height:auto;">` : '';
+    let previewContent = '';
+
+    if (pos === "centered") {
+        previewContent = `
+            <div style="text-align:center; padding: 15px; border: 1px dashed #ccc;">
+                <h4 style="margin:0;font-size:1.2em;">${titre}</h4>
+                ${imgElement}
+                <p style="margin-top:10px;">${texte}</p>
             </div>
-            ${pos === "right" ? `<img src="${img}" style="width:80px;height:auto;">` : ""}
-        </div>
-    `;
+        `;
+    } else {
+        previewContent = `
+            <div style="display:flex;gap:10px;align-items:flex-start;border: 1px dashed #ccc;padding: 15px;">
+                ${pos === "left" ? imgElement : ""}
+                <div style="flex-grow:1;">
+                    <h4 style="margin:0;font-size:1.2em;">${titre}</h4>
+                    <p style="margin-top:5px;">${texte}</p>
+                </div>
+                ${pos === "right" ? imgElement : ""}
+            </div>
+        `;
+    }
+
+    prev.innerHTML = previewContent;
+}
+
+// FAQ
+function addFaq() {
+    const faqs = JSON.parse(localStorage.getItem("faqs") || "[]");
+    const id = document.getElementById("faq-id").value;
+    const question = document.getElementById("faq-question").value;
+    const reponse = document.getElementById("faq-answer").value;
+    
+    if (editingFAQIndex !== null) {
+        faqs[editingFAQIndex] = { id, question, reponse, votes: faqs[editingFAQIndex].votes };
+        editingFAQIndex = null;
+    } else {
+        faqs.push({ id, question, reponse, votes: { up: 0, down: 0 } });
+    }
+    
+    localStorage.setItem("faqs", JSON.stringify(faqs));
+    renderFAQList();
+    clearFAQForm();
+    localStorage.setItem("site:update", Date.now());
+}
+
+function renderFAQList() {
+    const faqs = JSON.parse(localStorage.getItem("faqs") || "[]");
+    const container = document.getElementById("faq-list");
+    if (!container) return;
+    
+    container.innerHTML = "";
+    if (faqs.length === 0) {
+        container.innerHTML = "<p>Aucune FAQ enregistrée.</p>";
+        return;
+    }
+
+    faqs.forEach((f, index) => {
+        const item = document.createElement("div");
+        item.className = "admin-item";
+        item.innerHTML = `
+            <span>${f.id}</span>
+            <div class="admin-actions">
+                <button onclick="editFAQ(${index})">Modifier</button>
+                <button onclick="delFAQ(${index})" class="delete-btn">Supprimer</button>
+            </div>
+        `;
+        container.appendChild(item);
+    });
+}
+
+function editFAQ(index) {
+    const faqs = JSON.parse(localStorage.getItem("faqs") || "[]");
+    const f = faqs[index];
+    document.getElementById("faq-id").value = f.id;
+    document.getElementById("faq-question").value = f.question;
+    document.getElementById("faq-answer").value = f.answer;
+    document.getElementById("addFaqBtn").textContent = "Modifier";
+    editingFAQIndex = index;
+}
+
+function delFAQ(index) {
+    const faqs = JSON.parse(localStorage.getItem("faqs") || "[]");
+    faqs.splice(index, 1);
+    localStorage.setItem("faqs", JSON.stringify(faqs));
+    renderFAQList();
+    localStorage.setItem("site:update", Date.now());
+}
+
+function clearFAQForm() {
+    document.getElementById("faq-id").value = "";
+    document.getElementById("faq-question").value = "";
+    document.getElementById("faq-answer").value = "";
+    document.getElementById("addFaqBtn").textContent = "Ajouter";
+    editingFAQIndex = null;
 }

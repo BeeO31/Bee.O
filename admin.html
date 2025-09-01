@@ -30,14 +30,38 @@
             <select id="actu-pos">
                 <option value="left">Image à gauche</option>
                 <option value="right">Image à droite</option>
-            </select>
+                <option value="centered">Image centrée</option>
+          </select>
         </div>
         <div id="actu-preview" class="admin-preview"></div>
         <button onclick="addActu()" id="addActuBtn"><i class="fa-solid fa-plus"></i> Ajouter</button>
         <div id="actus-list" class="admin-list"></div>
     </div>
 
-    <div class="admin-section" id="liens-admin">
+<div class="admin-section" id="infos-admin">
+            <h2><i class="fa-solid fa-circle-info"></i> Infos Pratiques</h2>
+            
+            <div class="info-block">
+                <h3>Informations Générales</h3>
+                <label for="info-address">Adresse :</label>
+                <input type="text" id="info-address" placeholder="Ex: adresse à renseigner">
+                <label for="info-hours">Horaires d'ouverture :</label>
+                <input type="text" id="info-hours" placeholder="Ex: Mercredi : 14h00-17h00">
+                <button onclick="saveGeneralInfo()" class="btn">Enregistrer les informations</button>
+            </div>
+
+            <div class="info-block">
+                <h3>Liste des Contacts</h3>
+                <div class="contact-input-group">
+                    <input type="text" id="contact-name" placeholder="Prénom du contact">
+                    <input type="tel" id="contact-phone" placeholder="Numéro de téléphone">
+                </div>
+                <button onclick="addContact()" id="addContactBtn" class="add-btn"><i class="fa-solid fa-plus"></i> Ajouter un contact</button>
+                <div id="contacts-list" class="admin-list"></div>
+            </div>
+        </div>
+
+		<div class="admin-section" id="liens-admin">
         <h2><i class="fa-solid fa-link"></i> Liens Utiles</h2>
         <input type="text" id="lien-title" placeholder="Titre du lien">
         <input type="text" id="lien-url" placeholder="URL">

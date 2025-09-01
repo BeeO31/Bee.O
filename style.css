@@ -212,6 +212,16 @@ body {
   flex-direction: row;
 }
 
+/* Style pour l'image centrée */
+.actu-item.img-centered {
+    flex-direction: column;
+    align-items: center;
+}
+
+.actu-item.img-centered .actu-content {
+    text-align: center;
+}
+
 /* CARROUSEL PARTENAIRES */
 .partners-carousel {
   text-align: center;
@@ -878,4 +888,120 @@ footer p {
     display: flex;
     gap: 10px;
     align-items: center;
+}
+
+/* INFOS PRATIQUES */
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+}
+.info-item i {
+  font-size: 2rem;
+  color: var(--green);
+}
+.info-item h3 {
+  color: var(--green);
+  margin: 0;
+}
+.info-item p {
+  margin: 5px 0 0;
+}
+
+.contacts-list {
+    display: flex;
+    flex-direction: raw;
+    gap: 10px;
+}
+
+.contact-item {
+    background-color: #f0f0f0;
+    padding: 10px 15px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.info-links {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+/* Style pour la saisie des contacts dans la page admin */
+.info-block {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+.info-block h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--green);
+}
+
+.info-block label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.info-block input[type="text"],
+.info-block input[type="tel"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.info-block .btn {
+    width: auto;
+}
+
+.contact-input-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+@media (max-width: 768px) {
+    .contact-input-group {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Correction de l'ancrage pour la barre de navigation fixe */
+/* Nouvelle règle pour la correction de l'ancrage */
+:root {
+  scroll-padding-top: 60px; /* Doit correspondre à la hauteur de votre barre de navigation */
+}
+
+/* Optionnel, pour un défilement plus fluide */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Styles pour les titres d'actualités */
+.first-actu h3 {
+  color: var(--pink);
+}
+
+.even-actu h3 {
+  color: var(--yellow);
+}
+
+.odd-actu h3 {
+  color: var(--green);
 }
